@@ -1,0 +1,22 @@
+<%- include('partials/header.ejs', { config: config }) %>
+
+<div class="form center-form">
+    <h2 class="center">Log In or Sign Up!</h2>
+    <span class="break"></span>
+    <% if (config.error) { %>
+        <span class="error-txt">Mistaken username or password! Try again!</span>
+    <% } %>
+    <form action="/login" method="post" class="inp">
+        <div class="inputGroup">
+            <input type="text" name="name" id="name" placeholder=" " autocomplete="off">
+            <label for="name">Username</label>
+        </div>
+        <div class="inputGroup">
+            <input type="password" name="name" id="name" placeholder=" " autocomplete="off">
+            <label for="name">Password</label>
+        </div>
+        <input type="submit" value="Login / Sign Up">
+    </form>
+</div>
+
+<%- include('partials/footer.ejs') %>

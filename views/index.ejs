@@ -2,30 +2,30 @@
 
 <div class="sidebar">
     <a class="bar-item side-menu">
-        <span class="material-symbols-rounded icon">menu</span>
+        <div class="icon"><span class="material-symbols-rounded">menu</span></div>
         <p class="label hidden">Menu</p>
     </a>
     <a href="/library" class="bar-item">
-        <span class="material-symbols-rounded icon">newsstand</span>
+        <div class="icon"><span class="material-symbols-rounded">newsstand</span></div>
         <p class="label hidden">Library</p>
     </a>
     <a href="/favorites" class="bar-item">
-        <span class="material-symbols-rounded icon">favorite</span>
+        <div class="icon"><span class="material-symbols-rounded">favorite</span></div>
         <p class="label hidden">Favorites</p>
     </a>
     <% if (config.user.loggedin) { %>
         <a href="/logout" title="Logout" class="bar-item">
-            <span class="material-symbols-rounded icon">logout</span>
+            <div class="icon"><span class="material-symbols-rounded icon">logout</span></div>
             <p class="label hidden"><%= config.user.username %></p>
         </a>
     <% } else { %>
         <a href="/login" title="Login" class="bar-item">
-            <span class="material-symbols-rounded icon">login</span>
+            <div class="icon"><span class="material-symbols-rounded icon">login</span></div>
             <p class="label hidden">Login</p>
         </a>
     <% } %>
     <a href="/" class="bar-item">
-        <span class="material-symbols-rounded icon">home</span>
+        <div class="icon"><span class="material-symbols-rounded icon">home</span></div>
         <p class="label hidden">Home</p>
     </a>
 </div>

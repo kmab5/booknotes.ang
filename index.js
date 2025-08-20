@@ -17,10 +17,6 @@ db.connect();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let user = {
-    
-};
-
 let config = {
     user: {
         loggedin: true,
@@ -28,6 +24,7 @@ let config = {
     },
     order: 'date',
     book: '',
+    error: false,
 };
 
 // Library page (bookshelf with cover pics, sort w/ rating/recency(modified not added), add new books)
@@ -37,10 +34,14 @@ let config = {
 // Add book page (search and choose/custom fill out)
 
 app.get("/", (req, res) => {
-    res.render("index.ejs", {
-        page: "dashboard.ejs",
-        config: config,
-    });
+    if(config.user.loggedin) {
+        res.render("index.ejs", {
+            page: "dashboard.ejs",
+            config: config,
+        });
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.get("/about", (req, res) => {
@@ -50,11 +51,15 @@ app.get("/about", (req, res) => {
 });
 
 app.get("/library", (req, res) => {
-    config.order = req.query.order || 'date';
-    res.render("index.ejs", {
-        page: "library.ejs",
-        config: config,
-    });
+    if(config.user.loggedin) {
+        config.order = req.query.order || 'date';
+        res.render("index.ejs", {
+            page: "library.ejs",
+            config: config,
+        });
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.get("/favorites", (req, res) => {
@@ -64,41 +69,63 @@ app.get("/favorites", (req, res) => {
             config: config,
         });
     } else {
-        res.redirect("/");
+        res.redirect("/login");
     }
 });
 
 app.get("/book/:id", (req, res) => {
-    let book = {};
-    config.book = book;
-    res.render("index.ejs", {
-        page: "book.ejs",
-        config: config,
-    });
+    if(config.user.loggedin) {
+        let book = {};
+        config.book = book;
+        res.render("index.ejs", {
+            page: "book.ejs",
+            config: config,
+        });
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.get("/new", (req, res) => {
+    if(config.user.loggedin) {
+        res.render("index.ejs", {
+            page: "new.ejs",
+            config: config,
+        });
+    } else {
+        res.redirect("/login");
+    }
+});
 
-    res.render("index.ejs", {
-        page: "new.ejs",
+app.get("/login", (req, res) => {
+    res.render("signin.ejs", {
         config: config,
     });
 });
 
-app.get("/login", (req, res) => {
-    config.user = {
-        loggedin: true,
-        username: "kmab",
-    };
-    res.redirect("/");
+app.post("/login", (req, res) => {
+    config.error = true;
+    if(!config.error) {
+        config.user = {
+            loggedin: true,
+            username: "kmab",
+        };
+        res.redirect("/");
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.get("/logout", (req, res) => {
-    config.user = {
-        loggedin: false,
-        username: "",
-    };
-    res.redirect("/");
+    if(config.user.loggedin) {
+        config.user = {
+            loggedin: false,
+            username: "",
+        };
+        res.redirect("/");
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.get("/error", (req, res) => {

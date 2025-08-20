@@ -99,7 +99,9 @@ a:hover {
 }
 
 .icon {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 2rem;
     height: 2rem;
     cursor: pointer;
@@ -120,7 +122,7 @@ header .icon {
     font-variation-settings: 'FILL' 0;
 }
 
-.active-icon, .icon:hover {
+.active-icon, *:hover {
     font-variation-settings: 'FILL' 1;
 }
 
@@ -198,7 +200,7 @@ main {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    /* align-items: flex-start; */
+    align-items: flex-start;
     padding: 2rem;
     gap: 1rem;
     width: 100%;
@@ -225,6 +227,10 @@ main {
     cursor: pointer;
 }
 
+.bar-item > .label {
+    margin-right: 1rem;
+}
+
 .main {
     padding: 0.5rem;
 }
@@ -237,6 +243,17 @@ main {
     width: 100%;
     min-width: 10rem;
     max-width: 64%;
+}
+
+.center-form {
+    justify-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: var(--primary-light); */
+    padding: 1rem;
+    /* border: solid 0.01rem var(--primary-accent); */
+    border-radius: 0.5rem;
 }
 
 .inp {
@@ -583,7 +600,7 @@ section h2 {
     gap: 2rem;
 }
 
-main:has(.error) {
+main:has(.error), main:has(.center-form), main:has(.about) {
     justify-content: center;
 }
 
@@ -593,8 +610,8 @@ main:has(.error) {
     font-style: italic;
 }
 
-.error .colored {
-    color: orangered;
+.error .colored, .error-txt {
+    color: rgb(255, 30, 0);
 }
 
 .colored:hover {
