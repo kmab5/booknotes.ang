@@ -32,10 +32,10 @@ I read a lot of books but after I finish reading them I often don't remember all
 
 #### Example Ideas
 
-- Use the Open Library Covers API to fetch book covers.
+- Use the [Open Library Covers API](https://openlibrary.org/dev/docs/api/covers) to fetch book covers.
 - Create a database to store books you have read.
 - Have a way to add new data about books, update previous reviews and delete entries.
-- Display this information from your database in a website like [https://sive.rs/book]
+- Display this information from your database in a website like [https://sive.rs/book](https://sive.rs/book)
 - Be able to sort your book entries by rating and recency.
 
 #### Requirements
@@ -48,13 +48,13 @@ I read a lot of books but after I finish reading them I often don't remember all
 2. Project Planning
 
 - Think through your project, researching the API documentation, project features, what data you will store, and how it will be used in your web application.
-- Draw a database diagram on draw.io and plan out any relationships.
+- Draw a database diagram on [draw.io](https://draw.io/) and plan out any relationships.
 - Think through the PostgreSQL command you will need to write to create the schema for your database.
 
 3. Project Setup
 
 - Set up a new Node.js project using Express.js.
-- Include pg for working with your localhost PostgreSQL database.
+- Include [pg](https://www.npmjs.com/package/pg) for working with your localhost PostgreSQL database.
 - Include EJS for templating.
 - Create a frontend in HTML CSS JS.
 - Ensure that the project has a structured directory and file organization.
@@ -80,16 +80,16 @@ I read a lot of books but after I finish reading them I often don't remember all
 
 8. Code Sharing
 
-- Use what you have learnt about GitHub to commit and push your project to GitHub so that you can share it with other students in the Q&A area, I'd love to see what you've build too! You can tweet at me [@yu_angela]
-- Include a Readme.md file that explains how to start your server, what commands are needed to run your code. e.g. npm i  and then nodemon index.js
+- Use what you have learnt about GitHub to commit and push your project to GitHub so that you can share it with other students in the Q&A area, I'd love to see what you've build too! You can tweet at me [@yu_angela](https://x.com/@yu_angela)
+- Include a Readme.md file that explains how to start your server, what commands are needed to run your code. e.g. `npm i`  and then `nodemon index.js`
 
 #### Recommended Resources
 
-- Express.js: [Getting Started Guide]
-- Node.js: [Documentation]
-- Axios: [Documentation]
-- Postgres: [Documentation]
-- pg: [Documentation]
+- Express.js: [Getting Started Guide](https://expressjs.com/en/starter/installing.html)
+- Node.js: [Documentation](https://nodejs.org/en/docs/)
+- Axios: [Documentation](https://axios-http.com/docs/intro)
+- Postgres: [Documentation](https://www.postgresql.org/docs/current/index.html)
+- pg: [Documentation](https://node-postgres.com/)
 - Open Library Covers API:  [https://openlibrary.org/dev/docs/api/covers](https://openlibrary.org/dev/docs/api/covers)
 
 </details>

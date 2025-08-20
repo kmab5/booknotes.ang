@@ -1,4 +1,4 @@
-<%- include('partials/header.ejs') %>
+<%- include('partials/header.ejs', { user: user }) %>
 
 <div class="sidebar">
     <a class="bar-item side-menu">
@@ -13,7 +13,7 @@
         <span class="material-symbols-rounded">dark_mode</span>
         <p class="label hidden">Favorites</p>
     </a>
-    <a href="/" class="bar-item last">
+    <a href="/" class="bar-item">
         <span class="material-symbols-rounded">home</span>
         <p class="label hidden">Home</p>
     </a>
