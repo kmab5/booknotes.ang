@@ -18,7 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-    res.render("index.ejs");
+    res.render("index.ejs", {
+        page: "dashboard.ejs",
+    });
 });
 
 app.get("/about", (req, res) => {
@@ -34,5 +36,5 @@ app.all("*path", (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
+    console.log(`App listening on port http://localhost:${port}`);
 })
