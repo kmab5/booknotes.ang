@@ -1,25 +1,31 @@
 <div class="main">
-    <h1>Dashboard</h1>
-
-    <section>
-        <h3>Last Entry</h3>
-        <div class="bar">
-            <img class="left cover" src="/images/hp.jpeg" alt="Harry Potter">
-            <div class="right book">
-                <h2>Harry Potter & The Prisoner of Azkaban</h2>
-                <div class="subtext">Entry Date: Jan 1, 1970 | Entry Page: 13 | Book Progress: 4%</div>
-                <p class="entry">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Explicabo dolor ex labore. Labore, odio est? Qui inventore illum perspiciatis placeat harum impedit! Officiis animi repudiandae ad quaerat culpa eveniet vero reiciendis odio commodi aliquam perferendis ducimus porro expedita, ipsam veritatis aperiam nemo similique sed ullam eum nihil! Sequi, impedit doloribus?</p>
-            </div>
-        </div>
-    </section>
-
+    <h1><%= config.user.username %>'s Library</h1>
     <section>
         <div class="title-bar">
-            <h2>Recent Books</h2>
-            <a href="/add" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Add">add</span>Add</a>
+            <h2>All Books</h2>
+            <div class="button-group">
+                <div class="sort">
+                    <div class="add colored sort-btn"><span class="material-symbols-rounded icon add-icon" title="Add">sort</span>Sort</div>
+                    <form method="get" action="/library" class="sort-menu hidden">
+                        <% if (config.order === "date") { %>
+                            <input type="submit" name="order" value="date" id="date" disabled/>
+                            <input type="submit" name="order" value="rating" id="rating"/>
+                            <label class="colored" for="date"><span class="material-symbols-rounded">check_small</span>By Recency</label>
+                            <label for="rating">By Rating</label>
+                        <% } else { %>
+                            <input type="submit" name="order" value="date" id="date"/>
+                            <input type="submit" name="order" value="rating" id="rating" disabled/>
+                            <label for="date">By Recency</label>
+                            <label class="colored" for="rating"><span class="material-symbols-rounded">check_small</span>By Rating</label>
+                        <% } %>
+                        
+                    </form>
+                </div>
+                <a href="/add" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Add">add</span>Add</a>
+            </div>
         </div>
         <div class="slides">
-            <a href="#" class="slide">
+            <a href="/book/<%= 'book-id' %>" class="slide">
                 <img class="cover" src="/images/hobit.jpeg" alt="Image">
                 <p class="image-label">The Hobbit: An Unexpected Journey</p>
             </a>
@@ -54,3 +60,5 @@
         </div>
     </section>
 </div>
+
+<script src="/scripts/library.js"></script>

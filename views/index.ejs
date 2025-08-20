@@ -1,22 +1,22 @@
-<%- include('partials/header.ejs', { user: user }) %>
+<%- include('partials/header.ejs', { config: config }) %>
 
 <div class="sidebar">
     <a class="bar-item side-menu">
         <span class="material-symbols-rounded icon">menu</span>
         <p class="label hidden">Menu</p>
     </a>
-    <a href="/" class="bar-item">
+    <a href="/library" class="bar-item">
         <span class="material-symbols-rounded icon">newsstand</span>
         <p class="label hidden">Library</p>
     </a>
-    <a href="/" class="bar-item">
+    <a href="/favorites" class="bar-item">
         <span class="material-symbols-rounded icon">favorite</span>
         <p class="label hidden">Favorites</p>
     </a>
-    <% if (locals.user.loggedin) { %>
+    <% if (config.user.loggedin) { %>
         <a href="/logout" title="Logout" class="bar-item">
             <span class="material-symbols-rounded icon">logout</span>
-            <p class="label hidden"><%= locals.user.username %></p>
+            <p class="label hidden"><%= config.user.username %></p>
         </a>
     <% } else { %>
         <a href="/login" title="Login" class="bar-item">
@@ -30,7 +30,7 @@
     </a>
 </div>
 
-<%- include(page) %>
+<%- include(page, { config: config }) %>
 
 <script src="/scripts/home.js"></script>
 

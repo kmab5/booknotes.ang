@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Styles/Links -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL@0..1&icon_names=add,close,content_copy,dark_mode,download,favorite,home,login,logout,menu,newsstand&display=block" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL@0..1&icon_names=add,check_small,close,content_copy,dark_mode,download,favorite,home,login,logout,menu,newsstand,sort&display=block" />
     <link rel="stylesheet" href="/styles/main.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>"/>
     <title>Booknotes</title>
@@ -26,8 +26,8 @@
                 <div class="menu-items">
                     <a href="/" title="Homepage">Home</a>
                     <a href="/about" title="About">About</a>
-                    <% if (locals.user.loggedin) { %>
-                        <a href="/logout" title="Logout"><%= locals.user.username %></a>
+                    <% if (config.user.loggedin) { %>
+                        <a href="/logout" title="Logout"><%= config.user.username %></a>
                     <% } else { %>
                         <a href="/login" title="Login"><span class="material-symbols-rounded icon" title="Login">login</span></a>
                     <% } %>
