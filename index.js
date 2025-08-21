@@ -33,6 +33,10 @@ let config = {
 // Book display/add note page (Progress indicator, ratings giver, favorite)
 // Add book page (search and choose/custom fill out)
 
+// https://openlibrary.org/developers/api
+// https://covers.openlibrary.org/b/$key/$value-$size.jpg - https://openlibrary.org/dev/docs/api/covers
+// https://openlibrary.org/search.json?q=harry%20potter - http://openlibrary.org/dev/docs/api/search
+
 app.get("/", (req, res) => {
     if(config.user.loggedin) {
         res.render("index.ejs", {
@@ -75,7 +79,21 @@ app.get("/favorites", (req, res) => {
 
 app.get("/book/:id", (req, res) => {
     if(config.user.loggedin) {
-        let book = {};
+        let book = {
+            title: "Harry Potter",
+            added: "20250712UTC",
+            modified: "20250712UTC",
+            progress: 15,
+            pages: 500,
+            rating: 4,
+            notes: [
+                {
+                    date: "20250712UTC",
+                    page: 12,
+                    note: "",
+                },
+            ],
+        };
         config.book = book;
         res.render("index.ejs", {
             page: "book.ejs",
@@ -86,11 +104,25 @@ app.get("/book/:id", (req, res) => {
     }
 });
 
-app.get("/new", (req, res) => {
+app.get("/add", (req, res) => {
     if(config.user.loggedin) {
         res.render("index.ejs", {
             page: "new.ejs",
             config: config,
+        });
+    } else {
+        res.redirect("/login");
+    }
+});
+
+app.post("/add", (req, res) => {
+    let result = [req.body.name];
+    if(config.user.loggedin) {
+        res.render("index.ejs", {
+            page: "new.ejs",
+            config: config,
+            result: result,
+
         });
     } else {
         res.redirect("/login");

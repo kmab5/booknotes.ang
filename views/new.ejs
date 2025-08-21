@@ -1,6 +1,33 @@
 <div class="main">
-    <h1>Hello World!</h1>
+    <h1>Add New Book</h1>
     <section>
-        <h2>kmab.</h2>
+        <form action="/add" method="post" class="title-bar">
+            <!-- <input type="text" name="search" id="search" placeholder="Book Name Here..."> -->
+            <div class="inputGroup">
+                <input type="text" name="name" id="name" placeholder=" " autocomplete="off">
+                <label for="name">Book Name</label>
+            </div>
+            <input type="submit" value="" id="sub" class="hidden">
+            <label for="sub" class="add colored"><span class="material-symbols-rounded icon" title="Search">search</span>Search</label>
+        </form>
     </section>
+    <% if (locals.result) { %>
+    <section>
+        <% if (locals.result.length == 0) { %>
+        <h2>No Search Results</h2>
+        <% } else { %>
+        <h2>Search Results</h2>
+        <div class="slides">
+            <a href="/book/<%= 'book-id' %>" class="slide">
+                <img class="cover" src="/images/hobit.jpeg" alt="Image">
+                <p class="image-label"><%= locals.result[0] %></p>
+            </a>
+            <a href="#" class="slide">
+                <img class="cover" src="/images/lotr.jpeg" alt="Image">
+                <p class="image-label">The Lord of The Rings: Fellowship of the Ring</p>
+            </a>
+        </div>
+        <% } %>
+    </section>
+    <% } %>
 </div>
