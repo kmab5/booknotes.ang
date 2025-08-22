@@ -19,8 +19,9 @@ app.use(express.static("public"));
 
 let config = {
     user: {
-        loggedin: true,
-        username: "kmab",
+        loggedin: false,
+        username: "",
+        id: 0,
     },
     order: 'date',
     book: '',
@@ -32,6 +33,12 @@ let config = {
 // Login/Sign up page (username + password)
 // Book display/add note page (Progress indicator, ratings giver, favorite)
 // Add book page (search and choose/custom fill out)
+
+// add "add" buttons on search page books - done
+// make all book titles links
+// find a way(route) to add new books - /new
+
+// Date format - new Date().toISOString().replace('T',' ').split('.')[0]
 
 // https://openlibrary.org/developers/api
 // https://covers.openlibrary.org/b/$key/$value-$size.jpg - https://openlibrary.org/dev/docs/api/covers
@@ -129,19 +136,65 @@ app.post("/add", (req, res) => {
     }
 });
 
-app.get("/login", (req, res) => {
-    res.render("signin.ejs", {
-        config: config,
-    });
+app.post("/new", (req, res) => {
+    let result = [req.body.olid];
+    if(config.user.loggedin) {
+        res.render("index.ejs", {
+            page: "new.ejs",
+            config: config,
+            result: result,
+
+        });
+    } else {
+        res.redirect("/login");
+    }
 });
 
-app.post("/login", (req, res) => {
-    config.error = true;
-    if(!config.error) {
-        config.user = {
-            loggedin: true,
-            username: "kmab",
+app.get("/login", (req, res) => {
+    if(!config.user.loggedin){
+        res.render("signin.ejs", {
+            config: config,
+        });
+    } else {
+        res.redirect("/");
+    }
+});
+
+app.post("/login", async (req, res) => {
+    try {
+        const result = await db.query("SELECT id, username FROM users WHERE username = ($1) AND password = ($2)", [req.body.name, req.body.pass]);
+        let user = {
+            loggedin: false,
+            username: "",
+            id: 0,
         };
+        if (result.rows.length == 0) {
+            const newuser = await db.query("SELECT * FROM users WHERE username = ($1)", [req.body.name]);
+            if (newuser.rows.length == 0) {
+                const prompt = await db.query("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username", [req.body.name, req.body.pass]);
+                console.log(prompt.rows[0].username);
+                user = {
+                    loggedin: true,
+                    username: prompt.rows[0].username,
+                    id: parseInt(prompt.rows[0].id),
+                };
+            } else {
+                throw new Error();
+            }
+        } else {
+            user = {
+                loggedin: true,
+                username: result.rows[0].username,
+                id: parseInt(result.rows[0].id),
+            };
+        }
+        config.user = user;
+    } catch (err) {
+        config.error = true;
+        console.log(`error occured when loggin in: ${err}`);
+    }
+    if(!config.error) {
+        console.log(`User ${config.user.username} successfully logged in.`);
         res.redirect("/");
     } else {
         res.redirect("/login");
@@ -150,9 +203,11 @@ app.post("/login", (req, res) => {
 
 app.get("/logout", (req, res) => {
     if(config.user.loggedin) {
+        console.log(`User ${config.user.username} successfully logged out.`);
         config.user = {
             loggedin: false,
             username: "",
+            id: 0,
         };
         res.redirect("/");
     } else {

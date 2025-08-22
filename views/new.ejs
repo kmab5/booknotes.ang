@@ -22,10 +22,12 @@
                 <img class="cover" src="/images/hobit.jpeg" alt="Image">
                 <p class="image-label"><%= locals.result[0] %></p>
             </a>
-            <a href="#" class="slide">
+            <form method="post" action="/" class="slide">
                 <img class="cover" src="/images/lotr.jpeg" alt="Image">
                 <p class="image-label">The Lord of The Rings: Fellowship of the Ring</p>
-            </a>
+                <input type="submit" name="olid" value="OLID" id="olid" class="hidden">
+                <label for="olid" class="add colored"><span class="material-symbols-rounded icon" title="Add">add</span></label>
+            </form>
         </div>
         <% } %>
     </section>
