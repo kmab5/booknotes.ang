@@ -13,21 +13,29 @@
     </section>
     <% if (locals.result) { %>
     <section>
-        <% if (locals.result.length == 0) { %>
+        <% if (locals.result.docs.length == 0) { %>
         <h2>No Search Results</h2>
         <% } else { %>
-        <h2>Search Results</h2>
-        <div class="slides">
-            <a href="/book/<%= 'book-id' %>" class="slide">
+        <h2><%= result.numFound %> Search Results</h2>
+        <form method="post" action="/new" class="slides">
+            <% result.docs.forEach(book => { %>
+                <div class="slide">
+                    <img class="cover" src="https://covers.openlibrary.org/b/id/<%= book.cover_i %>-M.jpg" alt="Image">
+                    <p class="image-label"><%= book.title %></p>
+                    <input type="submit" name="book" value="<%= JSON.stringify(book) %>" id="<%= book.key %>" class="hidden">
+                    <label for="<%= book.key %>" class="add colored"><span class="material-symbols-rounded icon" title="Add">add</span></label>
+                </div>
+            <% }) %>
+            <!-- <a href="/book/" class="slide">
                 <img class="cover" src="/images/hobit.jpeg" alt="Image">
-                <p class="image-label"><%= locals.result[0] %></p>
+                <p class="image-label"></p>
             </a>
             <form method="post" action="/" class="slide">
                 <img class="cover" src="/images/lotr.jpeg" alt="Image">
                 <p class="image-label">The Lord of The Rings: Fellowship of the Ring</p>
                 <input type="submit" name="olid" value="OLID" id="olid" class="hidden">
                 <label for="olid" class="add colored"><span class="material-symbols-rounded icon" title="Add">add</span></label>
-            </form>
+            </form> -->
         </div>
         <% } %>
     </section>

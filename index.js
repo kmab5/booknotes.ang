@@ -1,4 +1,5 @@
 import express from "express";
+import axios from "axios";
 import pg from "pg";
 
 const app = express();
@@ -24,7 +25,7 @@ let config = {
         id: 0,
     },
     order: 'date',
-    book: '',
+    book: {},
     error: false,
 };
 
@@ -122,28 +123,50 @@ app.get("/add", (req, res) => {
     }
 });
 
-app.post("/add", (req, res) => {
-    let result = [req.body.name];
-    if(config.user.loggedin) {
-        res.render("index.ejs", {
-            page: "new.ejs",
-            config: config,
-            result: result,
-
-        });
-    } else {
-        res.redirect("/login");
+app.post("/add", async (req, res) => {
+    if(req.body.name.length == 0) return res.redirect("/add");
+    try {
+        const response = await axios.get(`https://openlibrary.org/search.json?q=${req.body.name}`);
+        let result = response.data;
+        if(config.user.loggedin) {
+            res.render("index.ejs", {
+                page: "new.ejs",
+                config: config,
+                result: result,
+            });
+        } else {
+            res.redirect("/login");
+        }
+    } catch (err) {
+        console.log(`error occured: ${err}`);
+        res.redirect("/add");
     }
 });
 
-app.post("/new", (req, res) => {
-    let result = [req.body.olid];
+app.post("/new", async (req, res) => {
     if(config.user.loggedin) {
+        let book = JSON.parse(req.body.book);
+        config.book = {
+            id: 0,
+            title: book.title,
+            added: new Date().toISOString().replace('T',' ').split('.')[0],
+            modified: new Date().toISOString().replace('T',' ').split('.')[0],
+            progress: 0,
+            rating: 0,
+            favorite: false,
+            olid: book.key.split("/")[2],
+            user_id: config.user.id,
+        };
+        try {
+            const result = await db.query("INSERT INTO books (book_name, added, modified, progress, rating, favorite, olid, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id", [config.book.title, config.book.added, config.book.modified, config.book.progress, config.book.rating, config.book.favorite, config.book.olid, config.book.user_id]);
+            config.book.id = result.rows[0].id;
+        } catch (err) {
+            console.log(`error occured when adding book: ${err}`);
+            res.redirect("/add");
+        }
         res.render("index.ejs", {
-            page: "new.ejs",
+            page: "book.ejs",
             config: config,
-            result: result,
-
         });
     } else {
         res.redirect("/login");
