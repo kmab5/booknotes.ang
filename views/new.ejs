@@ -2,7 +2,6 @@
     <h1>Add New Book</h1>
     <section>
         <form action="/add" method="post" class="title-bar">
-            <!-- <input type="text" name="search" id="search" placeholder="Book Name Here..."> -->
             <div class="inputGroup">
                 <input type="text" name="name" id="name" placeholder=" " autocomplete="off">
                 <label for="name">Book Name</label>
@@ -26,16 +25,6 @@
                     <label for="<%= book.key %>" class="add colored"><span class="material-symbols-rounded icon" title="Add">add</span></label>
                 </div>
             <% }) %>
-            <!-- <a href="/book/" class="slide">
-                <img class="cover" src="/images/hobit.jpeg" alt="Image">
-                <p class="image-label"></p>
-            </a>
-            <form method="post" action="/" class="slide">
-                <img class="cover" src="/images/lotr.jpeg" alt="Image">
-                <p class="image-label">The Lord of The Rings: Fellowship of the Ring</p>
-                <input type="submit" name="olid" value="OLID" id="olid" class="hidden">
-                <label for="olid" class="add colored"><span class="material-symbols-rounded icon" title="Add">add</span></label>
-            </form> -->
         </div>
         <% } %>
     </section>

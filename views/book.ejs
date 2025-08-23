@@ -4,12 +4,21 @@
         <div class="bar">
             <img class="left cover" src="/images/hp.jpeg" alt="Harry Potter">
             <div class="right book">
-                <div class="title-bar">
-                    <h2>Last Entry</h2>
-                    <a href="#" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Edit">edit</span>Edit</a>
-                </div>
-                <div class="subtext">Entry Date: Jan 1, 1970 | Entry Page: 13 | Book Progress: 4%</div>
-                <p class="entry">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Explicabo dolor ex labore. Labore, odio est? Qui inventore illum perspiciatis placeat harum impedit! Officiis animi repudiandae ad quaerat culpa eveniet vero reiciendis odio commodi aliquam perferendis ducimus porro expedita, ipsam veritatis aperiam nemo similique sed ullam eum nihil! Sequi, impedit doloribus?</p>
+                <h3>Added Date: <span class="colored normal"><%= config.book.added %></span></h3>
+                <form class="inputGroup">
+                    <input type="number" name="progress" id="progress" placeholder=" " value="<%= config.book.progress %>" autocomplete="off">
+                    <label for="progress">Progress (by page number)</label>
+                </form>
+                <h3>Last Modified Date: <span class="colored normal"><%= config.book.modified %></span></h3>
+                <form action="/update" method="post">
+                    <h3>Rating: </h3>
+                    <div class="rating"><span class="material-symbols-rounded active-icon" title="1">star</span><span class="material-symbols-rounded active-icon" title="2">star</span><span class="material-symbols-rounded active-icon" title="3">star</span><span class="material-symbols-rounded" title="4">star_half</span><span class="material-symbols-rounded" title="5">star</span></div>
+                </form>
+                <h3>Open Library ID: <span class="colored normal"><%= config.book.olid %></span></h3>
+                <form action="/update" method="post">
+                    <h3>Favorite: </h3>
+                    <div class="add"><span class="material-symbols-rounded favorite<% if (config.book.favorite) { %> active-icon<% } %>" title="favorite">favorite</span></div>
+                </form>
             </div>
         </div>
     </section>

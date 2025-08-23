@@ -35,9 +35,8 @@ let config = {
 // Book display/add note page (Progress indicator, ratings giver, favorite)
 // Add book page (search and choose/custom fill out)
 
-// add "add" buttons on search page books - done
 // make all book titles links
-// find a way(route) to add new books - /new
+// add a bar at the top of the book page with rating, favorite, modified and added date
 
 // Date format - new Date().toISOString().replace('T',' ').split('.')[0]
 
@@ -65,9 +64,12 @@ app.get("/about", (req, res) => {
 app.get("/library", (req, res) => {
     if(config.user.loggedin) {
         config.order = req.query.order || 'date';
+        // query for user books
+        let books = [];
         res.render("index.ejs", {
             page: "library.ejs",
             config: config,
+            books: books,
         });
     } else {
         res.redirect("/login");
@@ -76,9 +78,12 @@ app.get("/library", (req, res) => {
 
 app.get("/favorites", (req, res) => {
     if(config.user.loggedin) {
+        // query for user books
+        let books = [];
         res.render("index.ejs", {
             page: "favorites.ejs",
             config: config,
+            books: books,
         });
     } else {
         res.redirect("/login");
@@ -87,13 +92,14 @@ app.get("/favorites", (req, res) => {
 
 app.get("/book/:id", (req, res) => {
     if(config.user.loggedin) {
+
         let book = {
             title: "Harry Potter",
             added: "20250712UTC",
             modified: "20250712UTC",
             progress: 15,
-            pages: 500,
             rating: 4,
+            olid: "stgagda",
             notes: [
                 {
                     date: "20250712UTC",
@@ -160,14 +166,15 @@ app.post("/new", async (req, res) => {
         try {
             const result = await db.query("INSERT INTO books (book_name, added, modified, progress, rating, favorite, olid, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id", [config.book.title, config.book.added, config.book.modified, config.book.progress, config.book.rating, config.book.favorite, config.book.olid, config.book.user_id]);
             config.book.id = result.rows[0].id;
+            res.redirect(`/book/${config.book.id}`);
         } catch (err) {
             console.log(`error occured when adding book: ${err}`);
-            res.redirect("/add");
+            if(err == 'error: duplicate key value violates unique constraint "books_olid_user_id_key"') {
+                const result = await db.query("SELECT id FROM books WHERE olid = ($1) AND user_id = ($2)", [config.book.olid, config.book.user_id]);
+                config.book.id = result.rows[0].id;
+                res.redirect(`/book/${config.book.id}`);
+            } else res.redirect("/add");
         }
-        res.render("index.ejs", {
-            page: "book.ejs",
-            config: config,
-        });
     } else {
         res.redirect("/login");
     }

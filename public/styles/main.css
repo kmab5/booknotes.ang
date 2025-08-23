@@ -122,7 +122,7 @@ header .icon {
     font-variation-settings: 'FILL' 0;
 }
 
-.active-icon, *:hover {
+.active-icon, .icon:hover, .add-icon:hover, .icon:hover > * {
     font-variation-settings: 'FILL' 1;
 }
 
@@ -611,6 +611,44 @@ section h2 {
 
 .sort-menu > label:hover {
     color: var(--primary-accent);
+}
+
+span.normal {
+    font-weight: normal;
+    font-style: normal;
+}
+
+div.right.book {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+div.right.book > form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.bar:has(.book) .left.cover {
+    width: 25%;
+}
+
+div.right.book .rating {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.rating > *, .favorite {
+    font-size: 1.8rem;
+}
+
+.book .inputGroup input:focus ~ label, .book .inputGroup input:not(:placeholder-shown) ~ label {
+    background-color: var(--primary-light);
 }
 
 .list {
