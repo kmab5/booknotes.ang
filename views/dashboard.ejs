@@ -1,56 +1,41 @@
 <div class="main">
     <h1>Dashboard</h1>
 
-    <section>
-        <h3>Last Entry</h3>
-        <div class="bar">
-            <img class="left cover" src="/images/hp.jpeg" alt="Harry Potter">
-            <div class="right">
-                <h2><a href="/book/1">Harry Potter & The Prisoner of Azkaban</a></h2>
-                <div class="subtext">Entry Date: Jan 1, 1970 | Entry Page: 13 | Book Progress: 4%</div>
-                <p class="entry">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Explicabo dolor ex labore. Labore, odio est? Qui inventore illum perspiciatis placeat harum impedit! Officiis animi repudiandae ad quaerat culpa eveniet vero reiciendis odio commodi aliquam perferendis ducimus porro expedita, ipsam veritatis aperiam nemo similique sed ullam eum nihil! Sequi, impedit doloribus?</p>
+    <% if (!last.note_err) { %>
+        <section>
+            <h3>Last Entry</h3>
+            <div class="bar">
+                <img class="left cover" src="https://covers.openlibrary.org/w/olid/<%= last.olid %>-L.jpg" alt="<%= last.title %>">
+                <div class="right">
+                    <h2><a href="/book/<%= last.id %>"><%= last.title %></a></h2>
+                    <div class="subtext">Entry Time: <%= last.note.date.toLocaleTimeString() %> | Entry Date: <%= last.note.date.toDateString() %> | Entry Page: <%= last.note.page %></div>
+                    <p class="entry"><%= last.note.note %></p>
+                </div>
             </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="title-bar">
-            <h2>Recent Books</h2>
-            <a href="/add" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Add">add</span>Add</a>
-        </div>
-        <div class="slides">
-            <a href="#" class="slide">
-                <img class="cover" src="/images/hobit.jpeg" alt="Image">
-                <p class="image-label">The Hobbit: An Unexpected Journey</p>
-            </a>
-            <a href="#" class="slide">
-                <img class="cover" src="/images/lotr.jpeg" alt="Image">
-                <p class="image-label">The Lord of The Rings: Fellowship of the Ring</p>
-            </a>
-            <a href="#" class="slide">
-                <img class="cover" src="/images/hp.jpeg" alt="Image">
-                <p class="image-label">Harry Potter & The Prisoner of Azkaban</p>
-            </a>
-            <a href="#" class="slide">
-                <img class="cover" src="/images/hobit.jpeg" alt="Image">
-                <p class="image-label">The Hobbit: The Desolation of Smaug</p>
-            </a>
-            <a href="#" class="slide">
-                <img class="cover" src="/images/lotr.jpeg" alt="Image">
-                <p class="image-label">The Lord of the Rings: The Two Towers</p>
-            </a>
-            <a href="#" class="slide">
-                <img class="cover" src="/images/hobit.jpeg" alt="Image">
-                <p class="image-label">The Hobbit</p>
-            </a>
-            <a href="#" class="slide">
-                <img class="cover" src="/images/hp.jpeg" alt="Image">
-                <p class="image-label">Harry Potter</p>
-            </a>
-            <a href="#" class="slide">
-                <img class="cover" src="/images/lotr.jpeg" alt="Image">
-                <p class="image-label">Lord of the Rings</p>
-            </a>
-        </div>
-    </section>
+        </section>
+    <% } else { %>    
+        <section>
+            <h3>You currently have no notes in your library! Add one now <a class="colored" href="/library">here</a>!</h3>
+        </section>
+    <% } %>
+    <% if (!last.book_err) { %>
+        <section>
+            <div class="title-bar">
+                <h2>Recent Books</h2>
+                <a href="/add" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Add">add</span>Add</a>
+            </div>
+            <div class="slides">
+                <% last.recent.forEach(book => { %>
+                    <a href="/book/<%= book.id %>" class="slide">
+                        <img class="cover" src="https://covers.openlibrary.org/w/olid/<%= book.olid %>-M.jpg" alt="<%= book.title %>">
+                        <p class="image-label"><%= book.title %></p>
+                    </a>
+                <% }) %>
+            </div>
+        </section>
+    <% } else { %>    
+        <section>
+            <h3>You currently have no books in your library! Add one now <a class="colored" href="/add">here</a>!</h3>
+        </section>
+    <% } %>
 </div>

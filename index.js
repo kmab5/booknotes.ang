@@ -30,27 +30,47 @@ let config = {
     error: false,
 };
 
-// Library page (bookshelf with cover pics, sort w/ rating/recency(modified not added), add new books)
-// Favorites page (library duplicate with filter)
-// Login/Sign up page (username + password)
-// Book display/add note page (Progress indicator, ratings giver, favorite)
-// Add book page (search and choose/custom fill out)
-
-// make all book titles links
-// add a bar at the top of the book page with rating, favorite, modified and added date - Done
-
-// Date format - new Date().toISOString().replace('T',' ').split('.')[0]
-
-// https://openlibrary.org/developers/api
-// https://covers.openlibrary.org/b/$key/$value-$size.jpg - https://openlibrary.org/dev/docs/api/covers
-// https://openlibrary.org/search.json?q=harry%20potter - http://openlibrary.org/dev/docs/api/search
-
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
     if(config.user.loggedin) {
         // dashboard info query
+        let last = {
+            note_err: false,
+            book_err: false,
+            recent: [],
+        };
+        try {
+            const result = await db.query("SELECT * FROM books WHERE user_id = ($1) ORDER BY modified desc", [config.user.id]);
+            const note_result = await db.query("SELECT * FROM notes n JOIN books b ON n.book_id = b.id AND b.user_id = ($1) ORDER BY n.date desc", [config.user.id]);
+            if (note_result.rows.length > 0) {
+                last = {
+                    id: note_result.rows[0].book_id,
+                    title: note_result.rows[0].book_name,
+                    olid: note_result.rows[0].olid,
+                    note: {
+                        id: note_result.rows[0].id,
+                        note: note_result.rows[0].note,
+                        date: note_result.rows[0].date,
+                        page: note_result.rows[0].page,
+                    },
+                };
+            } else last.note_err = true;
+            if(result.rows.length > 0) {
+                for (let i = 0; i < 5; i++) {
+                    if (i >= result.rows.length) break;
+                    last.recent.push({
+                        id: result.rows[i].book_id,
+                        title: result.rows[i].book_name,
+                        olid: result.rows[i].olid,
+                    });
+                }
+            } else last.book_err = true;
+        } catch (err) {
+            console.log(`error occured when loading dashboard (/): ${err}`);
+        }
         res.render("index.ejs", {
             page: "dashboard.ejs",
             config: config,
+            last: last,
         });
     } else {
         res.redirect("/login");
