@@ -1,15 +1,15 @@
 <div class="main">
-    <h1>Harry Potter & The Prisoner of Azkaban</h1>
+    <h1><%= config.book.title %></h1>
     <section>
         <div class="bar">
-            <img class="left cover" src="/images/hp.jpeg" alt="Harry Potter">
+            <img class="left cover" src="https://covers.openlibrary.org/w/olid/<%= config.book.olid %>-M.jpg" alt="<%= config.book.title %>">
             <div class="right book">
-                <h3>Added Date: <span class="colored normal"><%= config.book.added %></span></h3>
+                <h3>Added Date: <span class="colored normal"><%= config.book.added.toUTCString() %></span></h3>
                 <form class="inputGroup">
                     <input type="number" name="progress" id="progress" placeholder=" " value="<%= config.book.progress %>" autocomplete="off">
                     <label for="progress">Progress (by page number)</label>
                 </form>
-                <h3>Last Modified Date: <span class="colored normal"><%= config.book.modified %></span></h3>
+                <h3>Last Modified Date: <span class="colored normal"><%= config.book.modified.toUTCString() %></span></h3>
                 <form action="/update" method="post">
                     <h3>Rating: </h3>
                     <div class="rating"><span class="material-symbols-rounded active-icon" title="1">star</span><span class="material-symbols-rounded active-icon" title="2">star</span><span class="material-symbols-rounded active-icon" title="3">star</span><span class="material-symbols-rounded" title="4">star_half</span><span class="material-symbols-rounded" title="5">star</span></div>
@@ -28,46 +28,18 @@
             <button class="add colored"><span class="material-symbols-rounded icon add-icon" title="Add">add</span>Add Note</button>
         </div>
         <div class="list">
-            <div class="list-item note">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste magni, tenetur vel delectus nisi earum veniam nobis eum ad recusandae necessitatibus ab maiores ipsam commodi porro impedit repudiandae excepturi, atque temporibus illo sed iusto minima maxime voluptas. Cumque temporibus recusandae, delectus nisi quidem perspiciatis architecto cupiditate, ad voluptate at facilis!</p>
-                <div class="title-bar">
-                    <h4 class="subtext">Entry Date: Jan 1, 1970 | Entry Page: 13 | Book Progress: 4%</h4>
-                    <div class="button-group">
-                        <button href="#" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Edit">edit</span>Edit</button>
-                        <button href="#" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Delete">delete</span>Delete</button>
+            <% if(config.notes.length > 0) { config.notes.forEach(note => { %>
+                <div class="list-item note">
+                    <p><%= note.note %></p>
+                    <div class="title-bar">
+                        <h4 class="subtext">Entry Time: <span class="normal"><%= note.date.toLocaleTimeString() %></span> | Entry Date: <span class="normal"><%= note.date.toDateString() %></span> | Entry Page: <span class="normal"><%= note.page %></span></h4>
+                        <div class="button-group">
+                            <button class="add colored"><span class="material-symbols-rounded icon add-icon" title="Edit">edit</span>Edit</button>
+                            <button class="add colored"><span class="material-symbols-rounded icon add-icon" title="Delete">delete</span>Delete</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="list-item note">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste magni, tenetur vel delectus nisi earum veniam nobis eum ad recusandae necessitatibus ab maiores ipsam commodi porro impedit repudiandae excepturi, atque temporibus illo sed iusto minima maxime voluptas. Cumque temporibus recusandae, delectus nisi quidem perspiciatis architecto cupiditate, ad voluptate at facilis!</p>
-                <div class="title-bar">
-                    <h4 class="subtext">Entry Date: Jan 1, 1970 | Entry Page: 13 | Book Progress: 4%</h4>
-                    <div class="button-group">
-                        <button href="#" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Edit">edit</span>Edit</button>
-                        <button href="#" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Delete">delete</span>Delete</button>
-                    </div>
-                </div>
-            </div>
-            <div class="list-item note">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste magni, tenetur vel delectus nisi earum veniam nobis eum ad recusandae necessitatibus ab maiores ipsam commodi porro impedit repudiandae excepturi, atque temporibus illo sed iusto minima maxime voluptas. Cumque temporibus recusandae, delectus nisi quidem perspiciatis architecto cupiditate, ad voluptate at facilis!</p>
-                <div class="title-bar">
-                    <h4 class="subtext">Entry Date: Jan 1, 1970 | Entry Page: 13 | Book Progress: 4%</h4>
-                    <div class="button-group">
-                        <button href="#" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Edit">edit</span>Edit</button>
-                        <button href="#" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Delete">delete</span>Delete</button>
-                    </div>
-                </div>
-            </div>
-            <div class="list-item note">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste magni, tenetur vel delectus nisi earum veniam nobis eum ad recusandae necessitatibus ab maiores ipsam commodi porro impedit repudiandae excepturi, atque temporibus illo sed iusto minima maxime voluptas. Cumque temporibus recusandae, delectus nisi quidem perspiciatis architecto cupiditate, ad voluptate at facilis!</p>
-                <div class="title-bar">
-                    <h4 class="subtext">Entry Date: Jan 1, 1970 | Entry Page: 13 | Book Progress: 4%</h4>
-                    <div class="button-group">
-                        <button href="#" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Edit">edit</span>Edit</button>
-                        <button href="#" class="add colored"><span class="material-symbols-rounded icon add-icon" title="Delete">delete</span>Delete</button>
-                    </div>
-                </div>
-            </div>
+            <% })} else { %> <h3>No notes so far! Add a new one now!</h3> <% } %>
         </div>
     </section>
 </div>

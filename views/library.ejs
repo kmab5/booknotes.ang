@@ -7,15 +7,15 @@
                 <div class="sort">
                     <div class="add colored sort-btn"><span class="material-symbols-rounded icon add-icon" title="Sort">sort</span>Sort</div>
                     <form method="get" action="/library" class="sort-menu hidden">
-                        <% if (config.order === "date") { %>
-                            <input type="submit" name="order" value="date" id="date" disabled/>
+                        <% if (config.order === "modified") { %>
+                            <input type="submit" name="order" value="modified" id="modified" disabled/>
                             <input type="submit" name="order" value="rating" id="rating"/>
-                            <label class="colored" for="date"><span class="material-symbols-rounded">check_small</span>By Recency</label>
+                            <label class="colored" for="modified"><span class="material-symbols-rounded">check_small</span>By Recency</label>
                             <label for="rating">By Rating</label>
                         <% } else { %>
-                            <input type="submit" name="order" value="date" id="date"/>
+                            <input type="submit" name="order" value="modified" id="modified"/>
                             <input type="submit" name="order" value="rating" id="rating" disabled/>
-                            <label for="date">By Recency</label>
+                            <label for="modified">By Recency</label>
                             <label class="colored" for="rating"><span class="material-symbols-rounded">check_small</span>By Rating</label>
                         <% } %>
                         
@@ -25,12 +25,12 @@
             </div>
         </div>
         <div class="slides">
-            <% books.forEach(book => { %>
+            <% if (books.length > 0) { books.forEach(book => { %>
                 <a href="/book/<%= book.id %>" class="slide">
-                    <img class="cover" src="https://covers.openlibrary.org/b/id/<%= book.olid %>-M.jpg" alt="Image">
-                    <p class="image-label"><%= book.title %></p>
+                    <img class="cover" src="https://covers.openlibrary.org/w/olid/<%= book.olid %>-M.jpg" alt="Image">
+                    <p class="image-label"><%= book.book_name %></p>
                 </a>
-            <% }) %>
+            <% }); } else { %> <h2>No books in your library yet. Add some <a class="colored" href="/add">here</a>.</h2> <% } %>
         </div>
     </section>
 </div>

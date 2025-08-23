@@ -2,12 +2,12 @@
     <h1><%= config.user.username %>'s Favorites</h1>
     <section>
         <div class="slides">
-            <% books.forEach(book => { %>
+            <% if (books.length > 0) { books.forEach(book => { %>
                 <a href="/book/<%= book.id %>" class="slide">
-                    <img class="cover" src="https://covers.openlibrary.org/b/id/<%= book.olid %>-M.jpg" alt="Image">
-                    <p class="image-label"><%= book.title %></p>
+                    <img class="cover" src="https://covers.openlibrary.org/w/olid/<%= book.olid %>-M.jpg" alt="Image">
+                    <p class="image-label"><%= book.book_name %></p>
                 </a>
-            <% }) %>
+            <% }); } else { %> <h2>No books in your favorites yet. Add some <a class="colored" href="/library">here</a>.</h2> <% } %>
         </div>
     </section>
 </div>

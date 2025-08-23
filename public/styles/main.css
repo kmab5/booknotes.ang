@@ -5,7 +5,7 @@
     --primary-bg: hsl(45, 75%, 90%);
     --primary-text: hsl(45, 10%, 10%);
     --primary-accent: hsl(45, 70%, 75%);
-    --primary-light: hsla(45, 100%, 95%, 0.9);
+    --primary-light: hsla(45, 100%, 95%, 1);
     --primary-grad: linear-gradient(215deg, hsla(45, 75%, 80%, 0.5) 0%, hsla(45, 25%, 50%, 0.75) 50%, hsla(45, 100%, 85%, 0.5) 100%);
     --white-bg: hsl(0, 0%, 100%, 0.1);
     --grey: rgb(100, 100, 100);
@@ -36,7 +36,7 @@ body.dark {
     --primary-bg: hsl(45, 75%, 10%);
     --primary-text: hsl(45, 10%, 90%);
     --primary-accent: hsl(45, 70%, 25%);
-    --primary-light: hsla(45, 100%, 5%, 0.9);
+    --primary-light: hsla(45, 100%, 5%, 1);
     --primary-grad: linear-gradient(215deg, hsla(45, 75%, 20%, 0.5) 0%, hsla(45, 25%, 50%, 0.75) 50%, hsla(45, 100%, 15%, 0.5) 100%);
     --grey: rgb(175, 175, 175);
     --white-bg: hsl(0, 0%, 0%, 0.1);
@@ -524,6 +524,7 @@ section h2 {
 
 .slide {
     width: 12rem;
+    height: 18rem;
     position: relative;
     overflow: hidden;
     border-radius: 0.5rem;
@@ -670,7 +671,8 @@ div.right.book .rating {
 }
 
 .note .subtext {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    font-weight: 800;
     font-style: normal;
 }
 

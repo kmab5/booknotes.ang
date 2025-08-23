@@ -24,8 +24,9 @@ let config = {
         username: "",
         id: 0,
     },
-    order: 'date',
+    order: 'modified',
     book: {},
+    notes: [],
     error: false,
 };
 
@@ -36,7 +37,7 @@ let config = {
 // Add book page (search and choose/custom fill out)
 
 // make all book titles links
-// add a bar at the top of the book page with rating, favorite, modified and added date
+// add a bar at the top of the book page with rating, favorite, modified and added date - Done
 
 // Date format - new Date().toISOString().replace('T',' ').split('.')[0]
 
@@ -46,6 +47,7 @@ let config = {
 
 app.get("/", (req, res) => {
     if(config.user.loggedin) {
+        // dashboard info query
         res.render("index.ejs", {
             page: "dashboard.ejs",
             config: config,
@@ -61,11 +63,17 @@ app.get("/about", (req, res) => {
     });
 });
 
-app.get("/library", (req, res) => {
+app.get("/library", async (req, res) => {
     if(config.user.loggedin) {
-        config.order = req.query.order || 'date';
+        config.order = req.query.order || 'modified';
         // query for user books
         let books = [];
+        try {
+            const result = await db.query("SELECT * FROM books WHERE user_id = ($1) ORDER BY ($2) desc", [config.user.id, config.order]);
+            books = result.rows;
+        } catch (err) {
+            console.log(`error occured when retrieving library (/library): ${err}`);
+        }
         res.render("index.ejs", {
             page: "library.ejs",
             config: config,
@@ -76,10 +84,16 @@ app.get("/library", (req, res) => {
     }
 });
 
-app.get("/favorites", (req, res) => {
+app.get("/favorites", async (req, res) => {
     if(config.user.loggedin) {
-        // query for user books
+        // query for user's favorite books
         let books = [];
+        try {
+            const result = await db.query("SELECT * FROM books WHERE user_id = ($1) AND favorite = true", [config.user.id]);
+            books = result.rows;
+        } catch (err) {
+            console.log(`error occured when retrieving favorites (/favorites): ${err}`);
+        }
         res.render("index.ejs", {
             page: "favorites.ejs",
             config: config,
@@ -90,24 +104,37 @@ app.get("/favorites", (req, res) => {
     }
 });
 
-app.get("/book/:id", (req, res) => {
+app.get("/book/:id", async (req, res) => {
     if(config.user.loggedin) {
-
-        let book = {
-            title: "Harry Potter",
-            added: "20250712UTC",
-            modified: "20250712UTC",
-            progress: 15,
-            rating: 4,
-            olid: "stgagda",
-            notes: [
-                {
-                    date: "20250712UTC",
-                    page: 12,
-                    note: "",
-                },
-            ],
-        };
+        // query for notes
+        let notes = [];
+        let book = {};
+        try {
+            const book_res = await db.query("SELECT * FROM books WHERE user_id = ($1) AND id = ($2)", [config.user.id, req.params.id]);
+            const notes_res = await db.query("SELECT * FROM notes n JOIN books b ON b.id = n.book_id AND b.user_id = ($1) AND b.id = ($2)", [config.user.id, req.params.id]);
+            book = {
+                id: book_res.rows[0].id,
+                title: book_res.rows[0].book_name,
+                added: book_res.rows[0].added,
+                modified: book_res.rows[0].modified,
+                progress: book_res.rows[0].progress,
+                rating: book_res.rows[0].rating,
+                favorite: book_res.rows[0].favorite,
+                olid: book_res.rows[0].olid,
+                user_id: book_res.rows[0].user_id,
+            };
+            notes_res.rows.forEach(row => {
+                notes.push({
+                    id: row.id,
+                    note: row.note,
+                    date: row.date,
+                    page: row.page,
+                });
+            });
+        } catch (err) {
+            console.log(`error occured when retrieving book (/book): ${err}`);
+        }
+        config.notes = notes;
         config.book = book;
         res.render("index.ejs", {
             page: "book.ejs",
@@ -116,6 +143,10 @@ app.get("/book/:id", (req, res) => {
     } else {
         res.redirect("/login");
     }
+});
+
+app.post("/update", (req, res) => {
+    // update anything from the book page: new note, edit note, delete note, edit favorite, edit rating
 });
 
 app.get("/add", (req, res) => {
@@ -144,7 +175,7 @@ app.post("/add", async (req, res) => {
             res.redirect("/login");
         }
     } catch (err) {
-        console.log(`error occured: ${err}`);
+        console.log(`error occured when looking up search (/add): ${err}`);
         res.redirect("/add");
     }
 });
@@ -168,7 +199,7 @@ app.post("/new", async (req, res) => {
             config.book.id = result.rows[0].id;
             res.redirect(`/book/${config.book.id}`);
         } catch (err) {
-            console.log(`error occured when adding book: ${err}`);
+            console.log(`error occured when adding book (post /new): ${err}`);
             if(err == 'error: duplicate key value violates unique constraint "books_olid_user_id_key"') {
                 const result = await db.query("SELECT id FROM books WHERE olid = ($1) AND user_id = ($2)", [config.book.olid, config.book.user_id]);
                 config.book.id = result.rows[0].id;
@@ -192,16 +223,16 @@ app.get("/login", (req, res) => {
 
 app.post("/login", async (req, res) => {
     try {
-        const result = await db.query("SELECT id, username FROM users WHERE username = ($1) AND password = ($2)", [req.body.name, req.body.pass]);
+        const result = await db.query("SELECT id, username FROM users WHERE username = ($1) AND password = ($2)", [req.body.name.toLowerCase(), req.body.pass]);
         let user = {
             loggedin: false,
             username: "",
             id: 0,
         };
         if (result.rows.length == 0) {
-            const newuser = await db.query("SELECT * FROM users WHERE username = ($1)", [req.body.name]);
+            const newuser = await db.query("SELECT * FROM users WHERE username = ($1)", [req.body.name.toLowerCase()]);
             if (newuser.rows.length == 0) {
-                const prompt = await db.query("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username", [req.body.name, req.body.pass]);
+                const prompt = await db.query("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username", [req.body.name.toLowerCase(), req.body.pass]);
                 console.log(prompt.rows[0].username);
                 user = {
                     loggedin: true,
