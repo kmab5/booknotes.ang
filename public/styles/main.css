@@ -122,7 +122,7 @@ header .icon {
     font-variation-settings: 'FILL' 0;
 }
 
-.active-icon, .icon:hover, .add-icon:hover, .icon:hover > * {
+.active-icon, .icon:hover, .add-icon:hover, .icon:hover > *, .update:hover > * {
     font-variation-settings: 'FILL' 1;
 }
 
@@ -266,8 +266,9 @@ main {
 
 textarea {
     min-width: 100%;
-    min-height: 10rem;
-    padding: 1rem;
+    min-height: fit-content;
+    field-sizing: content;
+    padding: 0.5rem;
     border: solid 0.01rem var(--primary-accent);
     border-radius: 0.5rem;
     font-size: 0.9rem;
@@ -278,7 +279,7 @@ textarea {
 
 textarea:focus-visible, textarea:focus, textarea:active {
     outline: solid 0.1rem var(--primary-accent);
-    border-radius: 0.9rem;
+    border-radius: 0.75rem;
 }
 
 input[type="submit"] {
@@ -466,6 +467,8 @@ section h2 {
     border: 0.01rem solid var(--primary-accent);
     border-radius: 1rem;
     background-color: var(--primary-light);
+
+    position: relative;
 }
 
 .bar .right {
@@ -629,7 +632,7 @@ div.right.book {
     align-items: center;
 }
 
-div.right.book > form {
+div.right.book > .header-input {
     display: flex;
     gap: 0.5rem;
     align-items: center;
@@ -650,6 +653,33 @@ div.right.book .rating {
 
 .book .inputGroup input:focus ~ label, .book .inputGroup input:not(:placeholder-shown) ~ label {
     background-color: var(--primary-light);
+}
+
+.update {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+}
+
+input.normal {
+    border: none;
+    background-color: inherit;
+    font-size: inherit;
+    color: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    padding: 0.5rem;
+    border-bottom: var(--primary) 0.1rem solid;
+    width: 10ch;
+    border-radius: 0.5rem;
+    outline: solid 0.05rem var(--primary-accent);
+    margin-left: 0.5rem;
+}
+
+.underline, .underline:focus-visible, input.normal:focus-visible {
+    border-bottom: var(--primary) 0.1rem solid;
+    outline: solid 0.1rem var(--primary-accent);
+    padding-bottom: 0.5rem;
 }
 
 .list {

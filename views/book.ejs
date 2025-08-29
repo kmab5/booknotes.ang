@@ -1,44 +1,50 @@
 <div class="main">
     <h1><%= config.book.title %></h1>
     <section>
-        <div class="bar">
+        <form method="post" action="/update" class="bar">
+            <input type="hidden" name="id" id="bookid" value="b<%= config.book.id %>">
             <img class="left cover" src="https://covers.openlibrary.org/w/olid/<%= config.book.olid %>-L.jpg" alt="<%= config.book.title %>">
             <div class="right book">
                 <h3>Added Date: <span class="colored normal"><%= config.book.added.toUTCString() %></span></h3>
-                <form class="inputGroup">
+                <div class="inputGroup">
                     <input type="number" name="progress" id="progress" placeholder=" " value="<%= config.book.progress %>" autocomplete="off">
                     <label for="progress">Progress (by page number)</label>
-                </form>
+                </div>
                 <h3>Last Modified Date: <span class="colored normal"><%= config.book.modified.toUTCString() %></span></h3>
-                <form action="/update" method="post">
+                <div class="header-input">
                     <h3>Rating: </h3>
+                    <input type="hidden" name="rating" value="<%= config.book.rating %>" id="rating">
                     <div class="rating"><span class="material-symbols-rounded active-icon" title="1">star</span><span class="material-symbols-rounded active-icon" title="2">star</span><span class="material-symbols-rounded active-icon" title="3">star</span><span class="material-symbols-rounded" title="4">star_half</span><span class="material-symbols-rounded" title="5">star</span></div>
-                </form>
+                </div>
                 <h3>Open Library ID: <span class="colored normal"><%= config.book.olid %></span></h3>
-                <form action="/update" method="post">
+                <div class="header-input">
                     <h3>Favorite: </h3>
+                    <input type="hidden" name="favorite" value="<%= config.book.favorite %>" id="favorite">
                     <div class="add"><span class="material-symbols-rounded favorite<% if (config.book.favorite) { %> active-icon<% } %>" title="favorite">favorite</span></div>
-                </form>
+                </div>
+                <button type="submit" class="update add colored hidden"><span class="material-symbols-rounded" title="Update">save</span>Update</button>
             </div>
-        </div>
+        </form>
     </section>
     <section>
         <div class="title-bar">
             <h2>Notes</h2>
-            <button class="add colored"><span class="material-symbols-rounded icon add-icon" title="Add">add</span>Add Note</button>
+            <button class="add colored add-note"><span class="material-symbols-rounded icon add-icon" title="Add">add</span>Add Note</button>
         </div>
         <div class="list">
             <% if(config.notes.length > 0) { config.notes.forEach(note => { %>
-                <div class="list-item note">
-                    <p><%= note.note %></p>
+                <form method="post" action="/update" class="list-item note">
+                    <input type="hidden" name="id" value="n<%= note.id %>b<%= config.book.id %>">
+                    <textarea name="note" disabled><%= note.note %></textarea>
                     <div class="title-bar">
                         <h4 class="subtext">Entry Time: <span class="normal"><%= note.date.toLocaleTimeString() %></span> | Entry Date: <span class="normal"><%= note.date.toDateString() %></span> | Entry Page: <span class="normal"><%= note.page %></span></h4>
                         <div class="button-group">
-                            <button class="add colored"><span class="material-symbols-rounded icon add-icon" title="Edit">edit</span>Edit</button>
-                            <button class="add colored"><span class="material-symbols-rounded icon add-icon" title="Delete">delete</span>Delete</button>
+                            <div class="add colored edit"><span class="material-symbols-rounded icon add-icon" title="Edit">edit</span>Edit</div>
+                            <button type="submit" name="mode" value="save" class="add colored done hidden"><span class="material-symbols-rounded icon add-icon" title="Save">save</span>Save</button>
+                            <button type="submit" name="mode" value="del" class="add colored delete"><span class="material-symbols-rounded icon add-icon" title="Delete">delete</span>Delete</button>
                         </div>
                     </div>
-                </div>
+                </form>
             <% })} else { %> <h3>No notes so far! Add a new one now!</h3> <% } %>
         </div>
     </section>

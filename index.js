@@ -55,10 +55,11 @@ app.get("/", async (req, res) => {
                 };
             } else last.note_err = true;
             if(result.rows.length > 0) {
+                last.recent = [];
                 for (let i = 0; i < 5; i++) {
                     if (i >= result.rows.length) break;
                     last.recent.push({
-                        id: result.rows[i].book_id,
+                        id: result.rows[i].id,
                         title: result.rows[i].book_name,
                         olid: result.rows[i].olid,
                     });
@@ -131,7 +132,7 @@ app.get("/book/:id", async (req, res) => {
         let book = {};
         try {
             const book_res = await db.query("SELECT * FROM books WHERE user_id = ($1) AND id = ($2)", [config.user.id, req.params.id]);
-            const notes_res = await db.query("SELECT * FROM notes n JOIN books b ON b.id = n.book_id AND b.user_id = ($1) AND b.id = ($2)", [config.user.id, req.params.id]);
+            const notes_res = await db.query("SELECT n.id, n.note, n.page, n.date FROM notes n JOIN books b ON b.id = n.book_id WHERE b.user_id = ($1) AND b.id = ($2) ORDER BY n.date desc", [config.user.id, req.params.id]);
             book = {
                 id: book_res.rows[0].id,
                 title: book_res.rows[0].book_name,
@@ -165,8 +166,68 @@ app.get("/book/:id", async (req, res) => {
     }
 });
 
-app.post("/update", (req, res) => {
+app.post("/update", async (req, res) => {
     // update anything from the book page: new note, edit note, delete note, edit favorite, edit rating
+    if(config.user.loggedin) {
+        let id = req.body.id.slice(1);
+        if(req.body.id.slice(0,1) == "b") {
+            let new_info = {
+                progress: req.body.progress,
+                rating: req.body.rating,
+                favorite: req.body.favorite == 'true' ? true : false,
+                modified: new Date().toISOString().replace('T',' ').split('.')[0],
+            };
+            try {
+                const result = await db.query("UPDATE books SET progress = ($1), rating = ($2), favorite = ($3), modified = ($4) WHERE id = ($5)", [new_info.progress, new_info.rating, new_info.favorite, new_info.modified, id]);
+                console.log(`Updated book with id ${id}!`);
+            } catch (err) {
+                console.log(`error occured when updating book (/update): ${err}`);
+            }
+        } else {
+            id = req.body.id.split("b")[1];
+            let note_id = req.body.id.split("b")[0].slice(1);
+            if (req.body.mode == "save") {
+                let new_info = {
+                    note: req.body.note,
+                    date: new Date().toISOString().replace('T',' ').split('.')[0],
+                };
+                try {
+                    const result = await db.query("UPDATE notes SET note = ($1), date = ($2) WHERE id = ($3)", [new_info.note, new_info.date, note_id]);
+                    const book_result = await db.query("UPDATE books SET modified = ($1) WHERE id = ($2)", [new_info.date, id]);
+                    console.log(`Updated note with id ${note_id}!`);
+                } catch (err) {
+                    console.log(`error occured when updating note (/update): ${err}`);
+                }
+            } else if (req.body.mode == "del") {
+                try {
+                    const result = await db.query("DELETE FROM notes WHERE id = ($1)", [note_id]);
+                    const book_result = await db.query("UPDATE books SET modified = ($1) WHERE id = ($2)", [new Date().toISOString().replace('T',' ').split('.')[0], id]);
+                    console.log(`Deleted note with id ${note_id}!`);
+                } catch (err) {
+                    console.log(`error occured when deleting note (/update): ${err}`);
+                }
+            } else {
+                // new note
+                let new_info = {
+                    note: req.body.note,
+                    page: parseInt(req.body.page),
+                    date: new Date().toISOString().replace('T',' ').split('.')[0],
+                };
+                let new_progress = new_info.page > config.book.progress ? new_info.page : config.book.progress;
+                try {
+                    const result = await db.query("INSERT INTO notes (note, date, page, book_id) VALUES ($1, $2, $3, $4) RETURNING id", [new_info.note, new_info.date, new_info.page, id]);
+                    const book_result = await db.query("UPDATE books SET modified = ($1), progress = ($2) WHERE id = ($3)", [new_info.date, new_progress, id]);
+                    note_id = result.rows[0].id;
+                    console.log(`Added note with id ${note_id}!`);
+                } catch (err) {
+                    console.log(`error occured when deleting note (/update): ${err}`);
+                }
+            }
+        }
+        res.redirect(`/book/${id}`);
+    } else {
+        res.redirect("/login");
+    }
 });
 
 app.get("/add", (req, res) => {
